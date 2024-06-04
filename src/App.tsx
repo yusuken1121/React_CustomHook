@@ -6,6 +6,8 @@ import { User } from "./types/UserTypes";
 
 function App() {
   const [users, setUsers] = useState<Array<UserProps>>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const onClickFetchData = async (): Promise<void> => {
     try {
@@ -26,7 +28,9 @@ function App() {
       });
       setUsers(userData);
     } catch (error) {
-      throw Error("error");
+      setError(true);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -37,17 +41,25 @@ function App() {
       >
         Fetch the data
       </button>
-      {users.map((user) => {
-        return (
-          <UserCard
-            key={user.id}
-            id={user.id}
-            user={user.user}
-            mail={user.mail}
-            address={user.address}
-          />
-        );
-      })}
+      {error ? (
+        <p className="text-red-600 text-3xl">failed fetching data</p>
+      ) : loading ? (
+        <p>Now loading</p>
+      ) : (
+        <div>
+          {users.map((user) => {
+            return (
+              <UserCard
+                key={user.id}
+                id={user.id}
+                user={user.user}
+                mail={user.mail}
+                address={user.address}
+              />
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
