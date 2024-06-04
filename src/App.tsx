@@ -10,6 +10,8 @@ function App() {
   const [error, setError] = useState(false);
 
   const onClickFetchData = async (): Promise<void> => {
+    setLoading(true);
+    setError(false);
     try {
       const res: Response = await fetch(
         "https://jsonplaceholder.typicode.com/users"
