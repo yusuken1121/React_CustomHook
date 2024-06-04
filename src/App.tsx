@@ -1,40 +1,10 @@
-import { useState } from "react";
 import "./App.css";
-
-import { UserCard, UserProps } from "./components/UserCard";
-import { User } from "./types/UserTypes";
+import { useAllUsers } from "./hooks/useAllUsers";
+import { UserCard } from "./components/UserCard";
 
 function App() {
-  const [users, setUsers] = useState<Array<UserProps>>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-
-  const onClickFetchData = async (): Promise<void> => {
-    setLoading(true);
-    setError(false);
-    try {
-      const res: Response = await fetch(
-        "https://jsonplaceholder.typicode.com/users"
-      );
-      if (!res.ok) {
-        throw new Error("HTTP error!");
-      }
-      const data: User[] = await res.json();
-      const userData = data.map((user: User) => {
-        return {
-          id: user.id,
-          user: `${user.name} ${user.username}`,
-          mail: user.email,
-          address: `${user.address.city} ${user.address.street} ${user.address.zipcode}`,
-        };
-      });
-      setUsers(userData);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { getUsers, users, loading, error } = useAllUsers();
+  const onClickFetchData = () => getUsers();
   return (
     <div>
       <button
